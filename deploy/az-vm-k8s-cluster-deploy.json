@@ -100,35 +100,28 @@
         "description": "The name of the Control plane Virtual Machine."
       }
     },
-      "vmDp1Name": {
+      "vmDpName": {
       "type": "string",
-      "defaultValue": "k8s-db1-vm",
+      "defaultValue": "k8s-dp-vm",
       "metadata": {
         "description": "The name of data plane worker 1 Virtual Machine."
       }
     },
-      "vmDp2Name": {
-      "type": "string",
-      "defaultValue": "k8s-dp2-vm",
-      "metadata": {
-        "description": "The name of dta plane worker node 2 Virtual Machine."
-      }
-    },
     "dnsCpLabelPrefix": {
-      "type": "string",
-      "defaultValue": "[toLower(format('{0}-{1}', parameters('vmCpName'), uniqueString(resourceGroup().id)))]",
-      "metadata": {
-        "description": "Unique DNS Name for the Public IP used to access the kubernetes control plane Virtual Machine."
-      }
-    },
-    "publicIpAddressName": {
-      "type": "string",
-      "defaultValue": "[format('{0}-ip', parameters('dnsCpLabelPrefix'))]",
-      "metadata": {
-        "description": "IP address name"
-      }
-    },
-     "securityType": {
+			"type": "string",
+			"defaultValue": "[toLower(concat('k8s-cp-cluster-', uniqueString(resourceGroup().id)))]",
+			"metadata": {
+				"description": "Unique DNS Name for the Public IP used to access the control plane Virtual Machine."
+			}
+		},
+		"dnsDpLabelPrefix": {
+			"type": "string",
+			"defaultValue": "[toLower(concat('k8s-dp-cluster-', uniqueString(resourceGroup().id)))]",
+			"metadata": {
+				"description": "Unique DNS Name for the Public IP used to access the data plane virtual machine"
+			}
+		},
+    "securityType": {
       "type": "string",
       "defaultValue": "TrustedLaunch",
       "allowedValues": [
@@ -138,9 +131,33 @@
       "metadata": {
         "description": "Security Type of the Virtual Machine."
       }
-    }
+    },
+    "defaultNodeCount": {
+			"type": "int",
+			"defaultValue": 2,
+			"metadata": {
+				"description": "The initial node size of your VMSS cluster."
+			}
+		},
+		"minNodeCount": {
+			"type": "int",
+			"defaultValue": 1,
+			"metadata": {
+				"description": "The min node size of your VMSS cluster."
+			}
+		},
+		"maxNodeCount": {
+			"type": "int",
+			"defaultValue": 2,
+			"metadata": {
+				"description": "The max node size of your VMSS cluster."
+			}
+		}
   },
   "variables": {
+    "publicIpAddressName" : "[concat(parameters('vmCpName'), '-ip' )]",
+    "publicDpIpAddressName" : "[concat(parameters('vmDpName'), '-ip' )]",
+
      "imageReference": {
       "Ubuntu-1804": {
         "publisher": "Canonical",
@@ -187,7 +204,7 @@
     {
 			"type": "Microsoft.Network/publicIPAddresses",
 			"apiVersion": "2020-08-01",
-			"name": "[parameters('publicIpAddressName')]",
+			"name": "[variables('publicIpAddressName')]",
 			"location": "[parameters('location')]",
 			"properties": {
 				"publicIPAllocationMethod": "Dynamic",
@@ -228,7 +245,7 @@
 			"location": "[parameters('location')]",
 			"dependsOn": [
 				"[resourceId('Microsoft.Network/virtualNetworks/', parameters('vnetName'))]",
-				"[resourceId('Microsoft.Network/publicIpAddresses/', parameters('publicIpAddressName'))]"
+				"[resourceId('Microsoft.Network/publicIpAddresses/', variables('publicIpAddressName'))]"
 			],
 			"properties": {
 				"ipConfigurations": [
@@ -240,7 +257,7 @@
 							},
 							"privateIPAllocationMethod": "Dynamic",
 							"publicIpAddress": {
-								"id": "[resourceId('Microsoft.Network/publicIPAddresses',parameters('publicIPAddressName'))]"
+								"id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]"
 							}
 						}
 					}
@@ -307,7 +324,79 @@
       "dependsOn": [
         "[resourceId('Microsoft.Network/networkInterfaces', variables('networkInterfaceName'))]"
       ]
-    }
+    },
+    {
+			"type": "Microsoft.Compute/virtualMachineScaleSets",
+			"apiVersion": "2020-12-01",
+			"name": "[parameters('vmDpName')]",
+			"tags": {
+				"cluster-autoscaler-enabled": "true",
+				"cluster-autoscaler-name": "[resourceGroup().name]",
+				"min": "[parameters('minNodeCount')]",
+				"max": "[parameters('maxNodeCount')]",
+				"poolName": "[parameters('vmDpName')]"
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Network/networkInterfaces/', variables('networkInterfaceName'))]"
+			],
+			"location": "[parameters('location')]",
+			"sku": {
+				"name": "[parameters('vmSize')]",
+				"tier": "Standard",
+				"capacity": "[parameters('defaultNodeCount')]"
+			},
+			"properties": {
+				"overprovision": false,
+				"upgradePolicy": {
+					"mode": "Manual"
+				},
+				"virtualMachineProfile": {
+					"storageProfile": {
+						"osDisk": {
+							"createOption": "FromImage",
+							"caching": "ReadWrite"
+						},
+						"imageReference": "[variables('imageReference')[parameters('ubuntuOSVersion')]]"
+					},
+					"osProfile": {
+						"computerNamePrefix": "[parameters('vmDpName')]",
+						"adminUsername": "[parameters('adminUsername')]",
+						"adminPassword": "[parameters('adminPasswordOrKey')]",
+						"linuxConfiguration": "[if(equals(parameters('authenticationType'), 'password'), null(), variables('linuxConfiguration'))]"
+					},
+          "securityProfile": "[if(equals(parameters('securityType'), 'TrustedLaunch'), variables('securityProfileJson'), json('null'))]",
+					"networkProfile": {
+						"networkInterfaceConfigurations": [
+							{
+								"name": "[concat('nic', parameters('vmDpName'))]",
+								"properties": {
+									"primary": true,
+									"ipConfigurations": [
+										{
+											"name": "[concat('ipconfigVmss', parameters('vmDpName'))]",
+											"properties": {
+												"subnet": {
+													"id": "[variables('subnetRef')]"
+												},
+												"publicIPAddressConfiguration": {
+													"name": "[variables('publicDpIpAddressName')]",
+													"properties": {
+														"idleTimeoutInMinutes": 10,
+														"dnsSettings": {
+															"domainNameLabel": "[parameters('dnsDpLabelPrefix')]"
+														}
+													}
+												}
+											}
+										}
+									]
+								}
+							}
+						]
+					}
+				}
+			}
+		}
   ],
   "outputs": {
     "adminUsername": {
@@ -316,11 +405,11 @@
     },
     "hostname": {
       "type": "string",
-      "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddressName')), '2021-05-01').dnsSettings.fqdn]"
+      "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName')), '2021-05-01').dnsSettings.fqdn]"
     },
     "sshCommand": {
       "type": "string",
-      "value": "[format('ssh {0}@{1}', parameters('adminUsername'), reference(resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddressName')), '2021-05-01').dnsSettings.fqdn)]"
+      "value": "[format('ssh {0}@{1}', parameters('adminUsername'), reference(resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName')), '2021-05-01').dnsSettings.fqdn)]"
     }
   }
 }
