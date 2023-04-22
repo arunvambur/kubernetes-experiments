@@ -109,14 +109,14 @@
     },
     "dnsCpLabelPrefix": {
 			"type": "string",
-			"defaultValue": "[toLower(concat('k8s-cp-cluster-', uniqueString(resourceGroup().id)))]",
+			"defaultValue": "[toLower(concat('k8s-cp-cluster', '-transunion'))]",
 			"metadata": {
 				"description": "Unique DNS Name for the Public IP used to access the control plane Virtual Machine."
 			}
 		},
 		"dnsDpLabelPrefix": {
 			"type": "string",
-			"defaultValue": "[toLower(concat('k8s-dp-cluster-', uniqueString(resourceGroup().id)))]",
+			"defaultValue": "[toLower(concat(concat('k8s-dp-cluster-', uniqueString(resourceGroup().id)),'-transunion'))]",
 			"metadata": {
 				"description": "Unique DNS Name for the Public IP used to access the data plane virtual machine"
 			}
@@ -381,6 +381,7 @@
 												"publicIPAddressConfiguration": {
 													"name": "[variables('publicDpIpAddressName')]",
 													"properties": {
+				                    "publicIPAddressVersion": "IPv4",
 														"idleTimeoutInMinutes": 10,
 														"dnsSettings": {
 															"domainNameLabel": "[parameters('dnsDpLabelPrefix')]"
