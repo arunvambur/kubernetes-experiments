@@ -22,4 +22,5 @@ sudo docker version
 # Add your 'user' to the docker group
 sudo usermod -aG docker $USER
 
+# Log out and log back in so that your group membership is re-evaluated
 echo 'Exit and login again'

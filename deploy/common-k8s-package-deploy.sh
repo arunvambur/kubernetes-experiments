@@ -18,6 +18,30 @@ net.ipv4.ip_forward                 = 1
 EOF
 
 # Apply sysctl params without reboot
-
 sudo sysctl --system
+
+sudo apt-get update && sudo apt-get install -y containerd
+
+sudo mkdir -p /etc/containerd
+
+# Make sure that 'disabled_plugins' is commented out in your config.toml file
+sudo sed -i 's/disabled_plugins/#disabled_plugins/' /etc/containerd/config.toml
+
+# Restart containerd
+sudo systemctl restart containerd
+
+# disable swap.
+sudo swapoff -a
+
+# On all nodes, install kubeadm, kubelet, and kubectl
+
+curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+
+cat << EOF | sudo tee /etc/apt/sources.list.d/kubernetes.list
+deb https://apt.kubernetes.io/ kubernetes-xenial main
+EOF
+
+sudo apt-get update && sudo apt-get install -y kubelet=1.24.0-00 kubeadm=1.24.0-00 kubectl=1.24.0-00
+
+sudo apt-mark hold kubelet kubeadm kubectl
 
