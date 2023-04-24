@@ -1,3 +1,5 @@
+#! /bin/bash
+
 # On all nodes, set up Docker Engine and containerd. You will need to load some kernel modules and modify some system settings as part of this process
 
 cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf

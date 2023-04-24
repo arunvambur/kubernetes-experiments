@@ -1,3 +1,5 @@
+#! /bin/bash
+
 # On the control plane node:
 
 sudo hostnamectl set-hostname k8s-control
