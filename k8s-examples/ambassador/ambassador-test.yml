@@ -5,7 +5,7 @@ metadata:
 data:
   haproxy.cfg:  |
     frontend ambassador
-      bind *: 8080
+      bind *:8080
       default_backend ambassador_test_svc
     backend ambassador_test_src
       server svc ambassador-test-svc:8081
@@ -18,7 +18,7 @@ spec:
   containers:
   - name: main
     image: radial/busyboxplus:curl
-    command: ['sh', '-c', 'while true; do curl localhost:8081; sleep 5; done']
+    command: ['sh', '-c', 'while true; do curl localhost:8080; sleep 5; done']
   - name: ambassador
     image: haproxy:2.4
     volumeMounts:
