@@ -9,14 +9,12 @@ data:
       default_backend ambassador_test_svc
     backend ambassador_test_src
       server svc ambassador-test-svc:8081
-
 ---
-
 apiVersion: v1
 kind: Pod
 metadata:
   name: ambassador-test
-spec
+spec: 
   containers:
   - name: main
     image: raidal/busyboxplus:curl
