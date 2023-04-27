@@ -7,7 +7,7 @@ data:
     frontend ambassador
       bind *:8080
       default_backend ambassador_test_svc
-    backend ambassador_test_src
+    backend ambassador_test_svc
       server svc ambassador-test-svc:8081
 ---
 apiVersion: v1
