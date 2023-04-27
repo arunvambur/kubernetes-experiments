@@ -17,7 +17,7 @@ metadata:
 spec: 
   containers:
   - name: main
-    image: raidal/busyboxplus:curl
+    image: radial/busyboxplus:curl
     command: ['sh', '-c', 'while true; do curl localhost:8080; sleep 5; done']
   - name: ambassador
     image: haproxy:2.4
