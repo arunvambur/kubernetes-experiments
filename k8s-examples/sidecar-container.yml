@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Pod
 metadata: 
   name: sidecar-test
-spec
+spec:
   containers:
   - name: writer
     image: busybox:stable
