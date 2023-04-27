@@ -18,7 +18,7 @@ spec:
   containers:
   - name: main
     image: radial/busyboxplus:curl
-    command: ['sh', '-c', 'while true; do curl localhost:8080; sleep 5; done']
+    command: ['sh', '-c', 'while true; do curl localhost:8081; sleep 5; done']
   - name: ambassador
     image: haproxy:2.4
     volumeMounts:
