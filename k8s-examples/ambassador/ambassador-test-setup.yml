@@ -19,7 +19,7 @@ metadata:
 spec:
   selector:
     app: ambassador-test
-  ports
+  ports:
   - protocol: TCP
     port: 8081
     targetport: 80
