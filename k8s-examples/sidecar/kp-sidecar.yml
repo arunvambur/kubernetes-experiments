@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: web-app
+spec:
+  containers:
+  - name: app
+    image: docker.io/centos/httpd
+    ports:
+    - containerPort: 80
+    volumeMounts:
+    - mountPath: /var/www/html
+      name: git
+  - name: poll
+    image: bitnami/git
+    command:
+    - "git clone https://github.com/mdn/beginner-html-site-scripted /var/lib/data && watch -n 60 git pull"
+    volumeMounts:
+    - mountPath: /var/lib/data
+      name: source
+  volumes:
+  - emptyDir: {}
+    name: source
