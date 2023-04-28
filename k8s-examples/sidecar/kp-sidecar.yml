@@ -2,10 +2,13 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: web-app
+  labels:
+    project: k8spatterns
+    pattern: sidecar
 spec:
   containers:
   - name: app
-    image: docker.io/centos/httpd
+    image: centos/httpd
     ports:
     - containerPort: 80
     volumeMounts:
@@ -13,11 +16,18 @@ spec:
       name: source
   - name: poll
     image: bitnami/git
-    command:
-    - git
-    - clone
-    - https://github.com/mdn/beginner-html-site-scripted
-    - /var/lib/data
+    env:
+    - name: SOURCE_REPO
+      value: https://github.com/mdn/beginner-html-site-scripted
+    command: ["sh", "-c"]
+    args:
+    - |
+      git clone $(SOURCE_REPO) .
+      while true; do
+        sleep 60
+        git pull
+      done
+    workingDir: /var/lib/data
     volumeMounts:
     - mountPath: /var/lib/data
       name: source
