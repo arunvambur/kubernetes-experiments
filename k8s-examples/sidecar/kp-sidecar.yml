@@ -35,18 +35,18 @@ spec:
   - emptyDir: {}
     name: source
 ---
-  apiVersion: v1
-  kind: Service
-  metadata:
-    labels:
-      project: k8spatterns
-      pattern: sidecar
-  spec:
-    ports:
-    - name: http
-      port: 8080
-      protocol: TCP
-      targetPort: 80
-    selector:
-      pattern: sidecar
-    type: NodePort
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    project: k8spatterns
+    pattern: sidecar
+spec:
+  ports:
+  - name: http
+    port: 8080
+    protocol: TCP
+    targetPort: 80
+  selector:
+    pattern: sidecar
+  type: NodePort
