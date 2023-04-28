@@ -40,7 +40,8 @@ kind: Service
 metadata:
   labels:
     project: k8spatterns
-    pattern: sidecar
+    pattern: Sidecar
+  name: web-app
 spec:
   ports:
   - name: http
@@ -48,5 +49,6 @@ spec:
     protocol: TCP
     targetPort: 80
   selector:
-    pattern: sidecar
+    pattern: Sidecar
+  # Just for demo
   type: NodePort
