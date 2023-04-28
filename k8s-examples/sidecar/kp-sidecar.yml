@@ -34,7 +34,7 @@ spec:
   volumes:
   - emptyDir: {}
     name: source
-  ---
+---
   apiVersion: v1
   kind: Service
   metadata:
