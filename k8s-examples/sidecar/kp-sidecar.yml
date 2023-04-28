@@ -10,7 +10,7 @@ spec:
     - containerPort: 80
     volumeMounts:
     - mountPath: /var/www/html
-      name: git
+      name: source
   - name: poll
     image: bitnami/git
     command:
