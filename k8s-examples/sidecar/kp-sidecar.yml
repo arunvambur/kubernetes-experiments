@@ -14,7 +14,10 @@ spec:
   - name: poll
     image: bitnami/git
     command:
-    - "git clone https://github.com/mdn/beginner-html-site-scripted /var/lib/data && watch -n 60 git pull"
+    - git
+    - clone
+    - https://github.com/mdn/beginner-html-site-scripted
+    - /var/lib/data
     volumeMounts:
     - mountPath: /var/lib/data
       name: source
