@@ -43,7 +43,7 @@ spec:
   - name: random
     port: 8080
     protocol: TCP
-    targetport: 8080
+    targetPort: 8080
   - name: prometheus
     port: 9889
     protocol: TCP
