@@ -6,7 +6,7 @@ metadata:
     app: random-generator
 spec:
   containers:
-  - image: k8spatterns/random-generators:1.0
+  - image: k8spatterns/random-generator:1.0
     name: main
     env:
     - name: LOG_URL
