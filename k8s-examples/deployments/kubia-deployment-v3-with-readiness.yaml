@@ -19,7 +19,7 @@ spec:
       labels:
         app: kubia
     spec:
-      containers;
+      containers:
       - name: nodejs
         image: luksa/kubia:v3
         readinessProbe:
