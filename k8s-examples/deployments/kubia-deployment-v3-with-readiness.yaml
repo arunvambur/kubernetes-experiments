@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kubia
+spec:
+  replicas: 3
+  minReadySeconds: 10
+  selector:
+    matchLabels:
+      app: kubia
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      name: kubia
+      labels:
+        app: kubia
+    spec:
+      containers;
+      - name: nodejs
+        image: luksa/kubia:v3
+        readinessProbe:
+          periodSeconds: 1
+          httpGet:
+            path: /
+            port: 80
+  
