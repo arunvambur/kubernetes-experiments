@@ -6,7 +6,7 @@ spec:
   containers:
   - name: busybox
     image: busybox:stable
-    command: ['sh', '-c', 'while true; sleep 10; done']
+    command: ['sh', '-c', 'while true; do sleep 10; done']
     livenessProbe:
       exec:
         command: ['echo', 'Health Checks']
