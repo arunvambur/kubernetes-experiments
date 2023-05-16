@@ -3,7 +3,7 @@ kind: RoleBinding
 metadata:
   name: list-pods-rb
 subjects:
-- kind: ServiceAccounts
+- kind: ServiceAccount
   name: my-sa
   namespace: default
 roleRef:
