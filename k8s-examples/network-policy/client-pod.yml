@@ -8,5 +8,5 @@ metadata:
 spec:
   containers:
   - name: busybox
-    image: radial/busybox:curl
+    image: radial/busyboxplus:curl
     command: ['sh', '-c', 'while true; do curl -m 2 10.244.32.165; sleep 10; done']
