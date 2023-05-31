@@ -6,7 +6,7 @@ spec:
   containers:
   - name: busybox
     image: busybox:stable
-    command: ['sh', '-c', 'while true; do echo Running...'; sleep 5; done']
+    command: ['sh', '-c', 'while true; do echo Running...; sleep 5; done']
     securityContext:
       runAsUser: 3000
       runAsGroup: 4000
