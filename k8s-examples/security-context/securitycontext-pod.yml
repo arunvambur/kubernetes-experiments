@@ -11,5 +11,5 @@ spec:
       runAsUser: 3000
       runAsGroup: 4000
       allowPrivilegeEscalation: false
-      readOnlyRootFileSystem: true
+      readOnlyRootFilesystem: true
       
