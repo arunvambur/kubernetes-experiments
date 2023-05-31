@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: np-test-a
+  labels:
+    team: ateam
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: np-test-b
+  labels:
+    team: bteam
