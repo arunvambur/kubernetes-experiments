@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-volume
+spec:
+  containers:
+  - name: my-volume
+    image: busybox:stable
+    volumeMounts:
+    - name: config-volume
+      mountPath: /etc/somepath
+  - name: cache-volume
+    image: registry.k8s.io/test-webserver
+    volumeMounts:
+    - name: cache-volume
+      mountPath: /etc/cache
+  - name: host-path-container
+    image: busybox:stable
+    command: ['sh', '-c', 'cat /data/data.txt']
+    volumeMounts:
+    - name: hostPathExample
+      mountPath: /data
+  volumes:
+    - name: config-volume
+      configMap:
+        name: log-config
+        items:
+          - key: log_level
+            path: log_level
+    - name: cache-volume
+      emptyDir:
+        sizeLimit: 500Mi
+    - name: hostpath-volume
+      hostPath:
+      path: /etc/hostpath
+      type: Directory
+---
+
