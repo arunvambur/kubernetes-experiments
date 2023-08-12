@@ -16,6 +16,7 @@ spec:
         - /tmp/healthy
       initialDelaySeconds: 5
       periodSeconds: 5
+
   - name: liveness-http
     image: registry.k8s.io/liveness
     args:
@@ -28,7 +29,11 @@ spec:
         - name: Custom-Header
           value: Awesome
       initialDelaySeconds: 2
-      periodSeconds: 2
+      periodSeconds: 10
+      timeoutSeconds: 5
+      successThreshold: 3
+      failureThreshold: 3
+
   - name: liveness-tcp
     image: registry.k8s.io/goproxy:0.1
     ports:
