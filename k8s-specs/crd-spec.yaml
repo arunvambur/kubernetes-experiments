@@ -21,6 +21,11 @@ spec:
           properties:
             spec:
               type: object
+              x-kubernetes-validations:
+              - rule: "self.minReplicas <= self.replicas"
+                message: "replicas should be greater than or equal to minReplicas"
+              - rule: "self.replicas <= self.maxReplicas"
+                message: "replicas should be smaller than or equal to maxReplicas"
               properties:
                 cronSpec:
                   type: string
@@ -39,8 +44,3 @@ spec:
                 - minReplicas
                 - replicas
                 - maxReplicas
-          x-kubernetes-validations:
-          - rule: "self.minReplicas <= self.replicas"
-            message: "replicas should be greater than or equal to minReplicas"
-          - rule: "self.replicas <= self.maxReplicas"
-            message: "replicas should be smaller than or equal to maxReplicas"
