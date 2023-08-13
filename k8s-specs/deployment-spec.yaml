@@ -5,11 +5,20 @@ metadata:
   labels:
     app: nginx
 spec:
+  progressDeadlineSeconds: 600
   replicas: 3
+  strategy:
+    type: RollingUpdate #[Recreate, RollingUpdate]
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
   selector:
     matchLabels:
       app: nginx
   template:
+    metadata:
+      labels:
+        app: nginx 
     spec:
       contianers:
       - name: nginx
