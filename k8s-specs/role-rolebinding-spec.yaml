@@ -1,0 +1,37 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: role-name
+rules:
+- apiGroups: [""]
+  resources: ["pods", "pods/logs"]
+  verbs: ["list", "get", "watch"]
+- apiGroups: [""]
+  resources: ["configmaps"]
+  resourceName: ["my-configmap"]
+  verbs: ["update", "get"]
+- apiGroups: ["example.com"]
+  verbs: ["*"]
+  resources: ["*"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: role-binding-name
+roleRef:
+  kind: Role
+  name: role-name
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+- kind: ServiceAccount
+  name: my-sa
+  namespace: default
+- kind: User
+  name: "alice@example.com"
+  apiGroup: rbac.authorization.k8s.io
+- kind: Group
+  name: "frontend-admins"
+  apiGroup: rbac.authorization.k8s.io
+- kind: Group
+  name: system:authenticated
+  apiGroup: rbac.authorization.k8s.io
