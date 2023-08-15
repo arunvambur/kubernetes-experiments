@@ -4,16 +4,16 @@ metadata:
   name: np-test-client-allow-egress
   namespace: np-test-b
 spec:
-  policyTypes:
-    - Egress
   podSelector:
     matchLabels:
       app: np-test-client
+  policyTypes:
+  - Egress
   egress:
   - to:
     - namespaceSelector:
         matchLabels:
-          team: bteam
+          team: ateam
     ports:
     - protocol: TCP
-      port: 80
+    port: 80
