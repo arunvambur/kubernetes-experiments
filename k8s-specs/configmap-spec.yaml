@@ -3,8 +3,8 @@ kind: ConfigMap
 metadata:
   name: game-demo
 data:
-  player_intial_lives: "3"
-  ui_properties_file_name: "user-interface.properties"
+  player-initial-lives: "3"
+  ui-properties-file-name: "user-interface.properties"
 
   game.properties: |
     enemy.types-aliens,monsters
@@ -29,11 +29,13 @@ spec:
     - name: PLAYER_INITIAL_LIVES
       valueFrom:
         configMapKeyRef:
-          name: player_initial_lives
+          name: game-demo 
+          key: player-initial-lives
     - name: UI_PROPERTIES_FILE_NAME
       valueFrom:
         configMapKeyRef:
-          name: ui_properties_file_name
+          name: game-demo 
+          key: ui-properties-file-name
     volumeMounts:
     - name: config
       mountPath: /config
