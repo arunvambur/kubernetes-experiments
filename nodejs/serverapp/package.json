@@ -1,0 +1,13 @@
+{
+    "name": "serverapp",
+    "version": "1.0.0",
+    "description": "Node.js app on kubernetes",
+    "author": "Arun Venkatesan <arun.venkatesan@transunion.com>",
+    "main": "server.js",
+    "scripts": {
+      "start": "node server.js"
+    },
+    "dependencies": {
+      "express": "^4.18.2"
+    }
+  }
