@@ -1,6 +1,6 @@
 docker build -t arunvambur/serverapp .
 
-docker run --name node-serverapp -d -p 8080:80 arunvambur/serverapp
+docker run --rm --name node-serverapp -d -p 49160:8080 arunvambur/serverapp
 
 docker stop <Container_ID> 
 docker rm <Container_ID>
