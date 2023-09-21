@@ -1,4 +1,4 @@
-docker build -t arunvambur/serverapp .
+docker build -t arunvambur/serverapp:1.0 .
 
 docker run --rm --name node-serverapp -d -p 49160:8080 arunvambur/serverapp
 
