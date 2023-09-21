@@ -4,3 +4,5 @@ docker run --name node-serverapp -d -p 8080:80 arunvambur/serverapp
 
 docker stop <Container_ID> 
 docker rm <Container_ID>
+
+docker image  rm arunvambur/serverapp

@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: serverapp
+spec:
+  containers:
+  - name: serverapp
+    image: arunvambur/serverapp
+    ports:
+    - containerPort: 8080
